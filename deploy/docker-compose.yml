@@ -1,0 +1,25 @@
+# Local deployment of the Basic Pitch HTTP transcription service.
+#
+#   docker compose -f deploy/docker-compose.yml up --build
+#
+# Then POST audio to http://localhost:8000/transcribe
+services:
+  basic-pitch-api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: basic-pitch-api
+    ports:
+      - "8000:8000"
+    environment:
+      # Serialized model to load: tf | coreml | tflite | onnx
+      BASIC_PITCH_MODEL: onnx
+      # Reject uploads larger than this many bytes (default 50 MB).
+      BASIC_PITCH_MAX_UPLOAD_BYTES: "52428800"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped

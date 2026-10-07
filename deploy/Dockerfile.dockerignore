@@ -1,0 +1,10 @@
+# Ignore-file specific to deploy/Dockerfile (takes precedence over the root
+# .dockerignore when building with BuildKit). Unlike the root file, this one
+# does NOT exclude saved_models — the bundled ONNX model must be in the image
+# for inference to work.
+.git
+.tox
+**/.mypy_cache
+**/.pytest_cache
+**/__pycache__
+**/*.wav
